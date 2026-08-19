@@ -46,82 +46,111 @@ export function HomePage() {
     "Expert";
 
   return (
-    <div className="space-y-10">
-      {/* Hero */}
-      <section className="relative overflow-hidden rounded-3xl bg-gradient-mesh border border-border">
-        <div className="absolute inset-0 bg-grid-pattern opacity-30" style={{
+    <div className="space-y-10 fade-in-up">
+      {/* Hero — premium with animated gradient orbs */}
+      <section className="relative overflow-hidden rounded-3xl border border-border bg-gradient-mesh">
+        {/* Animated gradient orbs for premium depth */}
+        <div
+          className="absolute -top-24 -left-24 w-96 h-96 rounded-full opacity-30 blur-3xl pointer-events-none"
+          style={{ background: "radial-gradient(circle, var(--aws-orange), transparent 70%)" }}
+        />
+        <div
+          className="absolute -bottom-32 -right-24 w-[28rem] h-[28rem] rounded-full opacity-20 blur-3xl pointer-events-none"
+          style={{ background: "radial-gradient(circle, var(--aws-violet), transparent 70%)" }}
+        />
+        <div className="absolute inset-0 opacity-20 pointer-events-none" style={{
           backgroundImage: "linear-gradient(to right, var(--border) 1px, transparent 1px), linear-gradient(to bottom, var(--border) 1px, transparent 1px)",
           backgroundSize: "32px 32px",
+          maskImage: "radial-gradient(ellipse at center, black 30%, transparent 80%)",
         }} />
-        <div className="relative px-6 py-12 md:px-12 md:py-16">
-          <Badge className="mb-4 bg-aws-orange/15 text-aws-orange border-aws-orange/30 hover:bg-aws-orange/20">
-            <Sparkles className="w-3 h-3 mr-1" />
-            Beginner to Expert AWS Journey
-          </Badge>
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-4 max-w-3xl">
-            Master <span className="bg-gradient-to-r from-aws-orange via-aws-amber to-aws-rose bg-clip-text text-transparent">AWS Cloud</span> from absolute zero to expert architect
+        <div className="relative px-6 py-12 md:px-12 md:py-20">
+          <div className="inline-flex items-center gap-2 mb-5 px-3 py-1.5 rounded-full border border-aws-orange/30 bg-aws-orange/10 backdrop-blur-sm">
+            <Sparkles className="w-3 h-3 text-aws-orange" />
+            <span className="text-xs font-medium text-aws-orange tracking-wide uppercase">
+              Beginner to Expert AWS Journey
+            </span>
+          </div>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-5 max-w-4xl leading-[1.1]">
+            Master <span className="gradient-text-orange">AWS Cloud</span> from absolute zero to expert architect
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mb-8">
-            A complete, interactive learning platform covering 14 AWS modules, hands-on projects, real-world troubleshooting scenarios, simulators, and certification prep — designed for AI/ML developers and DevOps engineers.
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mb-8 leading-relaxed">
+            A complete, interactive learning platform covering 14 AWS modules, 10 hands-on projects, real-world troubleshooting scenarios, simulators, and certification prep — designed for AI/ML developers and DevOps engineers.
           </p>
           <div className="flex flex-wrap gap-3">
-            <Button size="lg" onClick={() => navigate({ name: "learning-path" })}>
+            <Button size="lg" className="glow-orange" onClick={() => navigate({ name: "learning-path" })}>
               <BookOpen className="w-4 h-4 mr-2" />
               Start Learning Path
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
-            <Button size="lg" variant="outline" onClick={() => navigate({ name: "dashboard" })}>
+            <Button size="lg" variant="outline" className="backdrop-blur-sm" onClick={() => navigate({ name: "dashboard" })}>
               <Trophy className="w-4 h-4 mr-2" />
               View My Progress
             </Button>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12">
-            <div className="rounded-xl bg-card/50 backdrop-blur p-4 border border-border">
-              <div className="text-3xl font-bold">{modules.length}</div>
-              <div className="text-xs text-muted-foreground mt-1">In-Depth Modules</div>
+          {/* Premium stat bar */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-14">
+            <div className="rounded-xl bg-card/60 backdrop-blur-md p-5 border border-border hover:border-aws-orange/40 transition-colors group">
+              <div className="text-4xl font-bold gradient-text-orange">{modules.length}</div>
+              <div className="text-xs text-muted-foreground mt-1 uppercase tracking-wider">In-Depth Modules</div>
             </div>
-            <div className="rounded-xl bg-card/50 backdrop-blur p-4 border border-border">
-              <div className="text-3xl font-bold">{totalLessons}+</div>
-              <div className="text-xs text-muted-foreground mt-1">Interactive Lessons</div>
+            <div className="rounded-xl bg-card/60 backdrop-blur-md p-5 border border-border hover:border-aws-orange/40 transition-colors">
+              <div className="text-4xl font-bold gradient-text-orange">{totalLessons}+</div>
+              <div className="text-xs text-muted-foreground mt-1 uppercase tracking-wider">Interactive Lessons</div>
             </div>
-            <div className="rounded-xl bg-card/50 backdrop-blur p-4 border border-border">
-              <div className="text-3xl font-bold">10</div>
-              <div className="text-xs text-muted-foreground mt-1">Hands-On Projects</div>
+            <div className="rounded-xl bg-card/60 backdrop-blur-md p-5 border border-border hover:border-aws-orange/40 transition-colors">
+              <div className="text-4xl font-bold gradient-text-orange">10</div>
+              <div className="text-xs text-muted-foreground mt-1 uppercase tracking-wider">Hands-On Projects</div>
             </div>
-            <div className="rounded-xl bg-card/50 backdrop-blur p-4 border border-border">
-              <div className="text-3xl font-bold">12+</div>
-              <div className="text-xs text-muted-foreground mt-1">Quizzes & Scenarios</div>
+            <div className="rounded-xl bg-card/60 backdrop-blur-md p-5 border border-border hover:border-aws-orange/40 transition-colors">
+              <div className="text-4xl font-bold gradient-text-orange">12+</div>
+              <div className="text-xs text-muted-foreground mt-1 uppercase tracking-wider">Quizzes & Scenarios</div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Progress Summary */}
+      {/* Progress Summary — premium cards with empty states */}
       <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="card-lift">
+        <Card className="card-premium card-lift">
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <CardDescription>Overall Progress</CardDescription>
-              <Target className="w-4 h-4 text-muted-foreground" />
+              <Target className="w-4 h-4 text-aws-orange" />
             </div>
-            <CardTitle className="text-2xl">{overallProgress}%</CardTitle>
+            <CardTitle className="text-3xl font-bold">
+              {overallProgress === 0 ? (
+                <span className="text-muted-foreground/60">—</span>
+              ) : (
+                <span>{overallProgress}%</span>
+              )}
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <Progress value={overallProgress} className="h-2 mb-2" />
+            <Progress value={overallProgress} className="h-1.5 mb-2" />
             <div className="text-xs text-muted-foreground">
-              {completedLessons} / {totalLessons} lessons completed
+              {completedLessons === 0 ? (
+                <span className="text-aws-orange">Start your first lesson →</span>
+              ) : (
+                <span>{completedLessons} / {totalLessons} lessons completed</span>
+              )}
             </div>
           </CardContent>
         </Card>
 
-        <Card className="card-lift">
+        <Card className="card-premium card-lift">
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <CardDescription>Experience Points</CardDescription>
-              <TrendingUp className="w-4 h-4 text-muted-foreground" />
+              <TrendingUp className="w-4 h-4 text-aws-orange" />
             </div>
-            <CardTitle className="text-2xl">{Math.round(totalXP)} XP</CardTitle>
+            <CardTitle className="text-3xl font-bold">
+              {totalXP === 0 ? (
+                <span className="text-muted-foreground/60">0 XP</span>
+              ) : (
+                <span className="shimmer-text">{Math.round(totalXP)} XP</span>
+              )}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <Badge className={levelColors[skillLevel.toLowerCase()]}>
@@ -130,13 +159,19 @@ export function HomePage() {
           </CardContent>
         </Card>
 
-        <Card className="card-lift">
+        <Card className="card-premium card-lift">
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <CardDescription>Learning Streak</CardDescription>
-              <Flame className={cn("w-4 h-4", streakDays > 0 ? "text-aws-orange" : "text-muted-foreground")} />
+              <Flame className={cn("w-4 h-4 transition-all", streakDays > 0 ? "text-aws-orange scale-110" : "text-muted-foreground")} />
             </div>
-            <CardTitle className="text-2xl">{streakDays} days</CardTitle>
+            <CardTitle className="text-3xl font-bold">
+              {streakDays === 0 ? (
+                <span className="text-muted-foreground/60">—</span>
+              ) : (
+                <span>{streakDays} days</span>
+              )}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-xs text-muted-foreground">
@@ -145,13 +180,19 @@ export function HomePage() {
           </CardContent>
         </Card>
 
-        <Card className="card-lift">
+        <Card className="card-premium card-lift">
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <CardDescription>Achievements</CardDescription>
-              <Award className="w-4 h-4 text-muted-foreground" />
+              <Award className="w-4 h-4 text-aws-orange" />
             </div>
-            <CardTitle className="text-2xl">{achievements.length}</CardTitle>
+            <CardTitle className="text-3xl font-bold">
+              {achievements.length === 0 ? (
+                <span className="text-muted-foreground/60">—</span>
+              ) : (
+                <span>{achievements.length}</span>
+              )}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-xs text-muted-foreground">
@@ -161,12 +202,12 @@ export function HomePage() {
         </Card>
       </section>
 
-      {/* Learning Path Quick Start */}
+      {/* Learning Path Quick Start — premium module cards */}
       <section>
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-end justify-between mb-6">
           <div>
-            <h2 className="text-2xl font-bold tracking-tight">Continue Your Journey</h2>
-            <p className="text-sm text-muted-foreground">Pick up where you left off or start something new</p>
+            <h2 className="text-2xl md:text-3xl font-bold tracking-tight section-header">Continue Your Journey</h2>
+            <p className="text-sm text-muted-foreground mt-3">Pick up where you left off or start something new</p>
           </div>
           <Button variant="ghost" size="sm" onClick={() => navigate({ name: "learning-path" })}>
             View full path
@@ -175,7 +216,7 @@ export function HomePage() {
         </div>
 
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {modules.slice(0, 6).map((mod) => {
+          {modules.slice(0, 6).map((mod, idx) => {
             const Icon = moduleIconMap[mod.icon] || Cloud;
             const lessonsCompleted = mod.lessons.filter((l) =>
               useAppStore.getState().completedLessons[`${mod.id}:${l.id}`]
@@ -185,32 +226,46 @@ export function HomePage() {
             return (
               <Card
                 key={mod.id}
-                className="card-lift cursor-pointer group"
+                className={cn("card-premium card-lift cursor-pointer group fade-in-up", `stagger-${idx + 1}`)}
                 onClick={() => navigate({ name: "module", moduleId: mod.id })}
               >
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div
-                      className={cn("w-10 h-10 rounded-lg flex items-center justify-center")}
-                      style={{ backgroundColor: `var(--${mod.color})`, opacity: 0.15 }}
+                      className="w-12 h-12 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110"
+                      style={{
+                        backgroundColor: `color-mix(in srgb, var(--${mod.color}) 15%, transparent)`,
+                        border: `1px solid color-mix(in srgb, var(--${mod.color}) 30%, transparent)`,
+                      }}
                     >
-                      <Icon className="w-5 h-5" style={{ color: `var(--${mod.color})` }} />
+                      <Icon className="w-6 h-6" style={{ color: `var(--${mod.color})` }} />
                     </div>
-                    <Badge variant="outline" className="text-xs capitalize">
+                    <Badge
+                      variant="outline"
+                      className={cn("text-xs capitalize", levelColors[mod.level])}
+                    >
                       {mod.level}
                     </Badge>
                   </div>
-                  <CardTitle className="text-lg mt-3 group-hover:text-aws-orange transition-colors">
+                  <CardTitle className="text-lg mt-4 group-hover:text-aws-orange transition-colors">
                     {mod.title}
                   </CardTitle>
                   <CardDescription className="line-clamp-2">{mod.short}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex items-center justify-between text-xs mb-1.5">
+                  <div className="flex items-center justify-between text-xs mb-2">
                     <span className="text-muted-foreground">{lessonsCompleted} / {mod.lessons.length} lessons</span>
-                    <span className="font-medium">{progress}%</span>
+                    <span className="font-semibold text-foreground">{progress}%</span>
                   </div>
-                  <Progress value={progress} className="h-1.5" />
+                  <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all duration-500"
+                      style={{
+                        width: `${progress}%`,
+                        background: `linear-gradient(90deg, var(--${mod.color}), var(--aws-amber))`,
+                      }}
+                    />
+                  </div>
                 </CardContent>
               </Card>
             );
@@ -220,8 +275,10 @@ export function HomePage() {
 
       {/* Feature Highlights */}
       <section>
-        <h2 className="text-2xl font-bold tracking-tight mb-4">Interactive Learning Tools</h2>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-6 section-header">
+          Interactive Learning Tools
+        </h2>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           <FeatureCard
             icon={Terminal}
             color="aws-orange"
@@ -305,13 +362,16 @@ export function HomePage() {
 
       {/* What you'll learn */}
       <section>
-        <Card className="border-2 border-dashed border-border">
+        <Card className="border-2 border-dashed border-border bg-card/30">
           <CardHeader>
-            <CardTitle className="text-xl">What You'll Master</CardTitle>
+            <CardTitle className="text-xl flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-aws-orange" />
+              What You&apos;ll Master
+            </CardTitle>
             <CardDescription>From absolute beginner to senior cloud architect</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-2.5 md:grid-cols-2 lg:grid-cols-3">
               {[
                 "Cloud computing fundamentals & shared responsibility model",
                 "IAM deep dive: users, roles, policies, cross-account access",
@@ -325,10 +385,15 @@ export function HomePage() {
                 "Containers: Docker, ECS, Fargate, ECR",
                 "DevOps: CI/CD, IaC, deployment strategies",
                 "AI/ML infrastructure: data lakes, model serving",
-              ].map((item) => (
-                <div key={item} className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-level-beginner mt-0.5 shrink-0" />
-                  <span className="text-sm">{item}</span>
+              ].map((item, idx) => (
+                <div
+                  key={item}
+                  className="flex items-start gap-2.5 p-2 rounded-md hover:bg-accent/50 transition-colors"
+                >
+                  <div className="w-5 h-5 rounded-full bg-aws-emerald/15 flex items-center justify-center shrink-0 mt-0.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-aws-emerald" />
+                  </div>
+                  <span className="text-sm text-foreground/90">{item}</span>
                 </div>
               ))}
             </div>
@@ -353,18 +418,25 @@ function FeatureCard({
   onClick: () => void;
 }) {
   return (
-    <Card className="card-lift cursor-pointer group" onClick={onClick}>
+    <Card
+      className="card-premium card-lift cursor-pointer group h-full"
+      onClick={onClick}
+    >
       <CardHeader>
         <div
-          className="w-10 h-10 rounded-lg flex items-center justify-center"
-          style={{ backgroundColor: `var(--${color})`, opacity: 0.15 }}
+          className="w-12 h-12 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110"
+          style={{
+            backgroundColor: `color-mix(in srgb, var(--${color}) 15%, transparent)`,
+            border: `1px solid color-mix(in srgb, var(--${color}) 30%, transparent)`,
+          }}
         >
-          <Icon className="w-5 h-5" style={{ color: `var(--${color})` }} />
+          <Icon className="w-6 h-6" style={{ color: `var(--${color})` }} />
         </div>
-        <CardTitle className="text-base mt-3 group-hover:text-aws-orange transition-colors">
+        <CardTitle className="text-base mt-4 group-hover:text-aws-orange transition-colors flex items-center justify-between">
           {title}
+          <ArrowRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
         </CardTitle>
-        <CardDescription className="text-xs">{description}</CardDescription>
+        <CardDescription className="text-sm leading-relaxed">{description}</CardDescription>
       </CardHeader>
     </Card>
   );

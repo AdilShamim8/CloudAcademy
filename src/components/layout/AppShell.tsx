@@ -123,15 +123,26 @@ export function Sidebar() {
                             }
                           }}
                           className={cn(
-                            "w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                            "w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-all relative group",
                             "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
                             isActive && "bg-sidebar-accent text-sidebar-accent-foreground"
                           )}
                         >
-                          <Icon className="w-4 h-4 shrink-0" />
+                          {isActive && (
+                            <span
+                              className="absolute left-0 top-1.5 bottom-1.5 w-0.5 rounded-r-full"
+                              style={{ background: "var(--aws-orange)" }}
+                            />
+                          )}
+                          <Icon className={cn("w-4 h-4 shrink-0 transition-colors", isActive && "text-aws-orange")} />
                           <span className="flex-1 text-left">{item.label}</span>
                           {item.badge && (
-                            <span className="text-xs bg-aws-orange/20 text-aws-orange px-1.5 py-0.5 rounded-full font-semibold">
+                            <span className={cn(
+                              "text-xs px-1.5 py-0.5 rounded-full font-semibold",
+                              item.badge === "New"
+                                ? "bg-aws-emerald/20 text-aws-emerald"
+                                : "bg-aws-orange/20 text-aws-orange"
+                            )}>
                               {item.badge}
                             </span>
                           )}
@@ -166,15 +177,21 @@ export function Sidebar() {
                           }
                         }}
                         className={cn(
-                          "w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                          "w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-all relative",
                           "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
                           isActiveRoute && "bg-sidebar-accent text-sidebar-accent-foreground"
                         )}
                       >
+                        {isActiveRoute && (
+                          <span
+                            className="absolute left-0 top-1.5 bottom-1.5 w-0.5 rounded-r-full"
+                            style={{ background: `var(--${mod.color})` }}
+                          />
+                        )}
                         <Icon className="w-4 h-4 shrink-0" style={{ color: `var(--${mod.color})` }} />
                         <span className="flex-1 text-left truncate">{mod.short}</span>
                         <ChevronRight
-                          className={cn("w-4 h-4 transition-transform", isExpanded && "rotate-90")}
+                          className={cn("w-4 h-4 transition-transform text-muted-foreground", isExpanded && "rotate-90")}
                         />
                       </button>
                       {isExpanded && (

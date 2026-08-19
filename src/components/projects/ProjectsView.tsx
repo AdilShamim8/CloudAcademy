@@ -144,10 +144,16 @@ export function ProjectsView() {
         {projects.map((project, idx) => {
           const Icon = projectIconMap[project.id] || Cloud;
           const isComplete = !!completedProjects[project.id];
+          const isExpert = project.level === "expert";
           return (
             <Card
               key={project.id}
-              className="card-lift cursor-pointer group flex flex-col"
+              className={cn(
+                "card-premium card-lift cursor-pointer group flex flex-col fade-in-up h-full",
+                `stagger-${Math.min(idx + 1, 6)}`,
+                isComplete && "border-aws-emerald/40",
+                isExpert && "border-aws-violet/30",
+              )}
               onClick={() =>
                 navigate({ name: "project", projectId: project.id })
               }
@@ -155,12 +161,19 @@ export function ProjectsView() {
               <CardHeader>
                 <div className="flex items-start justify-between gap-3">
                   <div
-                    className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
-                    style={{ backgroundColor: "var(--aws-orange)", opacity: 0.12 }}
+                    className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-110"
+                    style={{
+                      backgroundColor: isExpert
+                        ? "color-mix(in srgb, var(--aws-violet) 15%, transparent)"
+                        : "color-mix(in srgb, var(--aws-orange) 15%, transparent)",
+                      border: isExpert
+                        ? "1px solid color-mix(in srgb, var(--aws-violet) 30%, transparent)"
+                        : "1px solid color-mix(in srgb, var(--aws-orange) 30%, transparent)",
+                    }}
                   >
                     <Icon
                       className="w-6 h-6"
-                      style={{ color: "var(--aws-orange)" }}
+                      style={{ color: isExpert ? "var(--aws-violet)" : "var(--aws-orange)" }}
                     />
                   </div>
                   <div className="flex flex-col items-end gap-2">
@@ -168,17 +181,17 @@ export function ProjectsView() {
                       Project {String(idx + 1).padStart(2, "0")}
                     </Badge>
                     {isComplete && (
-                      <Badge className="bg-aws-emerald/20 text-aws-emerald">
+                      <Badge className="bg-aws-emerald/20 text-aws-emerald border-aws-emerald/30">
                         <CheckCircle2 className="w-3 h-3 mr-1" />
                         Completed
                       </Badge>
                     )}
                   </div>
                 </div>
-                <CardTitle className="text-lg mt-3 group-hover:text-aws-orange transition-colors">
+                <CardTitle className="text-lg mt-4 group-hover:text-aws-orange transition-colors leading-tight">
                   {project.title}
                 </CardTitle>
-                <CardDescription className="line-clamp-2">
+                <CardDescription className="line-clamp-2 leading-relaxed">
                   {project.description}
                 </CardDescription>
               </CardHeader>

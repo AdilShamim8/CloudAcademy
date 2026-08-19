@@ -642,11 +642,13 @@ function Ec2Console({
           </div>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-8">
-                  <Checkbox
+          <div className="overflow-x-auto scroll-area-thin -mx-6">
+            <div className="min-w-[1100px] px-6">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-8">
+                      <Checkbox
                     checked={selected.length === instances.length && instances.length > 0}
                     onCheckedChange={(v) => setSelected(v ? instances.map((i) => i.id) : [])}
                   />
@@ -687,6 +689,8 @@ function Ec2Console({
               ))}
             </TableBody>
           </Table>
+            </div>
+          </div>
         </CardContent>
       </Card>
 

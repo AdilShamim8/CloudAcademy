@@ -485,9 +485,9 @@ export function DashboardView() {
         </Card>
       </section>
 
-      {/* XP per category chart */}
+      {/* XP per category chart — with premium empty state */}
       <section>
-        <Card>
+        <Card className="card-premium">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <BarChart3 className="w-5 h-5 text-aws-cyan" />
@@ -498,55 +498,78 @@ export function DashboardView() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-72 w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  data={xpPerCategory}
-                  margin={{ top: 8, right: 8, left: 0, bottom: 8 }}
-                >
-                  <CartesianGrid
-                    strokeDasharray="3 3"
-                    stroke="var(--border)"
-                    vertical={false}
-                  />
-                  <XAxis
-                    dataKey="category"
-                    tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
-                    interval={0}
-                    angle={-30}
-                    textAnchor="end"
-                    height={60}
-                  />
-                  <YAxis
-                    tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
-                    allowDecimals={false}
-                  />
-                  <RTooltip
-                    cursor={{ fill: "var(--muted)", opacity: 0.3 }}
-                    contentStyle={{
-                      backgroundColor: "var(--card)",
-                      border: "1px solid var(--border)",
-                      borderRadius: 8,
-                      fontSize: 12,
-                    }}
-                    formatter={(value: number) => [`${value} XP`, "Earned"]}
-                  />
-                  <Bar dataKey="xp" radius={[4, 4, 0, 0]}>
-                    {xpPerCategory.map((entry, idx) => (
-                      <Cell key={idx} fill={entry.color} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+            {totalXP === 0 ? (
+              <div className="h-72 flex flex-col items-center justify-center text-center px-6">
+                <div className="w-16 h-16 rounded-full bg-aws-cyan/10 flex items-center justify-center mb-4">
+                  <BarChart3 className="w-8 h-8 text-aws-cyan" />
+                </div>
+                <div className="font-medium mb-1">No XP earned yet</div>
+                <div className="text-sm text-muted-foreground mb-4 max-w-sm">
+                  Complete lessons to see your skill distribution across AWS categories visualized here.
+                </div>
+                <Button size="sm" onClick={() => navigate({ name: "learning-path" })}>
+                  <BookOpen className="w-4 h-4 mr-1" />
+                  Start your first lesson
+                </Button>
+              </div>
+            ) : (
+              <div className="h-72 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={xpPerCategory}
+                    margin={{ top: 8, right: 8, left: 0, bottom: 8 }}
+                  >
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      stroke="var(--border)"
+                      vertical={false}
+                    />
+                    <XAxis
+                      dataKey="category"
+                      tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
+                      interval={0}
+                      angle={-30}
+                      textAnchor="end"
+                      height={60}
+                    />
+                    <YAxis
+                      tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
+                      allowDecimals={false}
+                    />
+                    <RTooltip
+                      cursor={{ fill: "var(--muted)", opacity: 0.3 }}
+                      contentStyle={{
+                        backgroundColor: "var(--card)",
+                        border: "1px solid var(--border)",
+                        borderRadius: 8,
+                        fontSize: 12,
+                      }}
+                      formatter={(value: number) => [`${value} XP`, "Earned"]}
+                    />
+                    <Bar dataKey="xp" radius={[4, 4, 0, 0]}>
+                      {xpPerCategory.map((entry, idx) => (
+                        <Cell key={idx} fill={entry.color} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            )}
           </CardContent>
         </Card>
       </section>
 
       {/* Module progress */}
       <section>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-bold tracking-tight">Module Progress</h2>
+        <div className="flex items-end justify-between mb-6">
+          <div>
+            <h2 className="text-2xl md:text-3xl font-bold tracking-tight section-header">
+              Module Progress
+            </h2>
+            <p className="text-sm text-muted-foreground mt-3">
+              Track your journey through all 14 modules
+            </p>
+          </div>
           <Button
             variant="ghost"
             size="sm"
@@ -556,9 +579,9 @@ export function DashboardView() {
             <ArrowRight className="w-4 h-4 ml-1" />
           </Button>
         </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {modules.map((mod) => (
-            <ModuleProgressCard key={mod.id} module={mod} />
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {modules.map((mod, idx) => (
+            <ModuleProgressCard key={mod.id} module={mod} index={idx} />
           ))}
         </div>
       </section>
@@ -913,7 +936,13 @@ function StatCard({
   );
 }
 
-function ModuleProgressCard({ module: mod }: { module: Module }) {
+function ModuleProgressCard({
+  module: mod,
+  index = 0,
+}: {
+  module: Module;
+  index?: number;
+}) {
   const navigate = useAppStore((s) => s.navigate);
   const completedLessons = useAppStore((s) => s.completedLessons);
   const lessonsCompleted = mod.lessons.filter(
@@ -923,40 +952,63 @@ function ModuleProgressCard({ module: mod }: { module: Module }) {
     mod.lessons.length > 0
       ? Math.round((lessonsCompleted / mod.lessons.length) * 100)
       : 0;
+  const isComplete = progress === 100;
   const Icon = moduleIconMap[mod.icon] || Cloud;
 
   return (
     <Card
-      className="card-lift cursor-pointer group"
+      className={cn(
+        "card-premium card-lift cursor-pointer group fade-in-up h-full",
+        `stagger-${Math.min(index + 1, 6)}`,
+        isComplete && "border-aws-emerald/40",
+      )}
       onClick={() => navigate({ name: "module", moduleId: mod.id })}
     >
-      <CardHeader>
-        <div className="flex items-start justify-between">
+      <CardHeader className="pb-3">
+        <div className="flex items-start justify-between gap-2">
           <div
-            className="w-10 h-10 rounded-lg flex items-center justify-center"
+            className="w-10 h-10 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110 shrink-0"
             style={{
-              backgroundColor: `var(--${mod.color})`,
-              opacity: 0.15,
+              backgroundColor: `color-mix(in srgb, var(--${mod.color}) 15%, transparent)`,
+              border: `1px solid color-mix(in srgb, var(--${mod.color}) 30%, transparent)`,
             }}
           >
             <Icon className="w-5 h-5" style={{ color: `var(--${mod.color})` }} />
           </div>
-          <Badge variant="outline" className="text-xs capitalize">
+          <Badge
+            variant="outline"
+            className={cn("text-[10px] capitalize shrink-0", levelColors[mod.level])}
+          >
             {mod.level}
           </Badge>
         </div>
-        <CardTitle className="text-base mt-3 group-hover:text-aws-orange transition-colors line-clamp-1">
+        <CardTitle className="text-sm mt-3 group-hover:text-aws-orange transition-colors line-clamp-2 leading-tight">
           {mod.title}
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="pt-0">
         <div className="flex items-center justify-between text-xs mb-1.5">
           <span className="text-muted-foreground">
-            {lessonsCompleted} / {mod.lessons.length} lessons
+            {lessonsCompleted} / {mod.lessons.length}
           </span>
-          <span className="font-medium">{progress}%</span>
+          <span className={cn(
+            "font-semibold tabular-nums",
+            isComplete ? "text-aws-emerald" : "text-foreground"
+          )}>
+            {progress}%
+          </span>
         </div>
-        <Progress value={progress} className="h-1.5" />
+        <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+          <div
+            className="h-full rounded-full transition-all duration-500"
+            style={{
+              width: `${progress}%`,
+              background: isComplete
+                ? "linear-gradient(90deg, var(--aws-emerald), var(--aws-teal))"
+                : `linear-gradient(90deg, var(--${mod.color}), var(--aws-amber))`,
+            }}
+          />
+        </div>
       </CardContent>
     </Card>
   );

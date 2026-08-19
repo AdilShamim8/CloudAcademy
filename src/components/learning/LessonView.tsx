@@ -95,6 +95,7 @@ function ModulePathCard({ module: mod, index }: { module: Module; index: number 
   const lessonsCompleted = mod.lessons.filter((l) => completedLessons[`${mod.id}:${l.id}`]).length;
   const progress = mod.lessons.length > 0 ? Math.round((lessonsCompleted / mod.lessons.length) * 100) : 0;
   const isComplete = lessonsCompleted === mod.lessons.length;
+  const [expanded, setExpanded] = React.useState(index === 0); // first module expanded by default
 
   const iconMap: Record<string, React.ComponentType<{ className?: string; style?: React.CSSProperties }>> = {
     Cloud: CloudIcon, Layers: LayersIcon, ShieldCheck: ShieldCheckIcon,
@@ -105,92 +106,132 @@ function ModulePathCard({ module: mod, index }: { module: Module; index: number 
   const Icon = iconMap[mod.icon] || CloudIcon;
 
   return (
-    <Card className="card-lift overflow-hidden">
-      <CardHeader>
-        <div className="flex items-start gap-4">
-          <div className="flex flex-col items-center">
-            <div className="text-xs text-muted-foreground">Module</div>
-            <div className="text-2xl font-bold">{String(index + 1).padStart(2, "0")}</div>
-          </div>
-          <div
-            className="w-12 h-12 rounded-lg flex items-center justify-center shrink-0"
-            style={{ backgroundColor: `var(--${mod.color})`, opacity: 0.15 }}
-          >
-            <Icon className="w-6 h-6" style={{ color: `var(--${mod.color})` }} />
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex flex-wrap items-center gap-2 mb-1">
-              <CardTitle className="text-xl">{mod.title}</CardTitle>
-              <Badge className={cn("text-xs", levelColors[mod.level])}>
-                {mod.level}
-              </Badge>
-              {isComplete && (
-                <Badge className="bg-aws-emerald/20 text-aws-emerald">
-                  <CheckCircle2 className="w-3 h-3 mr-1" />
-                  Completed
+    <Card className={cn(
+      "card-premium overflow-hidden fade-in-up transition-all",
+      `stagger-${Math.min(index + 1, 6)}`,
+      isComplete && "border-aws-emerald/40"
+    )}>
+      {/* Clickable header — toggles expansion */}
+      <button
+        onClick={() => setExpanded(!expanded)}
+        className="w-full text-left focus-ring"
+        aria-expanded={expanded}
+      >
+        <CardHeader className="hover:bg-accent/50 transition-colors">
+          <div className="flex items-start gap-4">
+            <div className="flex flex-col items-center justify-center shrink-0">
+              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Module</div>
+              <div className="text-2xl font-bold gradient-text-orange">{String(index + 1).padStart(2, "0")}</div>
+            </div>
+            <div
+              className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-transform hover:scale-110"
+              style={{
+                backgroundColor: `color-mix(in srgb, var(--${mod.color}) 15%, transparent)`,
+                border: `1px solid color-mix(in srgb, var(--${mod.color}) 30%, transparent)`,
+              }}
+            >
+              <Icon className="w-6 h-6" style={{ color: `var(--${mod.color})` }} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex flex-wrap items-center gap-2 mb-2">
+                <CardTitle className="text-xl">{mod.title}</CardTitle>
+                <Badge className={cn("text-xs", levelColors[mod.level])}>
+                  {mod.level}
                 </Badge>
-              )}
-            </div>
-            <p className="text-sm text-muted-foreground">{mod.description}</p>
-            <div className="flex flex-wrap gap-4 mt-3 text-xs text-muted-foreground">
-              <span className="flex items-center gap-1">
-                <BookOpen className="w-3 h-3" />
-                {mod.lessons.length} lessons
-              </span>
-              <span className="flex items-center gap-1">
-                <Clock className="w-3 h-3" />
-                {mod.estimatedHours}h estimated
-              </span>
-              <span className="flex items-center gap-1">
-                <Award className="w-3 h-3" />
-                {mod.lessons.reduce((s, l) => s + l.xp, 0)} XP
-              </span>
-            </div>
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-1">
-          {mod.lessons.map((lesson, lidx) => {
-            const isDone = completedLessons[`${mod.id}:${lesson.id}`];
-            return (
-              <button
-                key={lesson.id}
-                onClick={() => navigate({ name: "lesson", moduleId: mod.id, lessonId: lesson.id })}
-                className="w-full flex items-center gap-3 p-2 rounded-md hover:bg-accent transition-colors text-left group"
-              >
-                {isDone ? (
-                  <CheckCircle2 className="w-4 h-4 text-level-beginner shrink-0" />
-                ) : (
-                  <Circle className="w-4 h-4 text-muted-foreground shrink-0" />
+                {isComplete && (
+                  <Badge className="bg-aws-emerald/20 text-aws-emerald border-aws-emerald/30">
+                    <CheckCircle2 className="w-3 h-3 mr-1" />
+                    Completed
+                  </Badge>
                 )}
-                <span className="text-xs text-muted-foreground font-mono w-8 shrink-0">
-                  {lidx + 1}.
+              </div>
+              <p className="text-sm text-muted-foreground line-clamp-2">{mod.description}</p>
+              <div className="flex flex-wrap items-center gap-4 mt-3 text-xs">
+                <span className="flex items-center gap-1 text-muted-foreground">
+                  <BookOpen className="w-3 h-3" />
+                  {mod.lessons.length} lessons
                 </span>
-                <span className={cn("text-sm flex-1 truncate", isDone && "text-muted-foreground line-through")}>
-                  {lesson.title}
+                <span className="flex items-center gap-1 text-muted-foreground">
+                  <Clock className="w-3 h-3" />
+                  {mod.estimatedHours}h
                 </span>
-                <Badge variant="outline" className={cn("text-xs capitalize hidden md:inline-flex", levelColors[lesson.level])}>
-                  {lesson.level}
-                </Badge>
-                <span className="text-xs text-muted-foreground hidden sm:inline">
-                  {lesson.duration}m
+                <span className="flex items-center gap-1 text-muted-foreground">
+                  <Award className="w-3 h-3" />
+                  {mod.lessons.reduce((s, l) => s + l.xp, 0)} XP
                 </span>
-                <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground" />
-              </button>
-            );
-          })}
-        </div>
-        <div className="mt-4 flex items-center gap-2">
-          <Button size="sm" onClick={() => navigate({ name: "module", moduleId: mod.id })}>
-            Open Module
-            <ArrowRight className="w-4 h-4 ml-1" />
-          </Button>
-          <div className="ml-auto text-xs text-muted-foreground">
-            {lessonsCompleted} / {mod.lessons.length} ({progress}%)
+                <div className="flex items-center gap-2 ml-auto">
+                  <div className="w-24 h-1.5 bg-muted rounded-full overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all duration-500"
+                      style={{
+                        width: `${progress}%`,
+                        background: isComplete
+                          ? "linear-gradient(90deg, var(--aws-emerald), var(--aws-teal))"
+                          : `linear-gradient(90deg, var(--${mod.color}), var(--aws-amber))`,
+                      }}
+                    />
+                  </div>
+                  <span className="font-semibold text-foreground tabular-nums">{progress}%</span>
+                </div>
+                <ChevronRight className={cn("w-4 h-4 text-muted-foreground transition-transform", expanded && "rotate-90")} />
+              </div>
+            </div>
           </div>
-        </div>
-      </CardContent>
+        </CardHeader>
+      </button>
+
+      {/* Collapsible lessons list */}
+      {expanded && (
+        <CardContent className="pt-0 border-t border-border bg-muted/20">
+          <div className="space-y-1 mt-2">
+            {mod.lessons.map((lesson, lidx) => {
+              const isDone = completedLessons[`${mod.id}:${lesson.id}`];
+              return (
+                <button
+                  key={lesson.id}
+                  onClick={() => navigate({ name: "lesson", moduleId: mod.id, lessonId: lesson.id })}
+                  className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-accent transition-all text-left group border border-transparent hover:border-border"
+                >
+                  <div className={cn(
+                    "w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs shrink-0 transition-colors",
+                    isDone
+                      ? "bg-aws-emerald/20 text-aws-emerald"
+                      : "bg-muted text-muted-foreground group-hover:bg-aws-orange/15 group-hover:text-aws-orange"
+                  )}>
+                    {isDone ? <CheckCircle2 className="w-4 h-4" /> : lidx + 1}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className={cn(
+                      "text-sm font-medium truncate transition-colors",
+                      isDone ? "text-muted-foreground line-through" : "text-foreground group-hover:text-aws-orange"
+                    )}>
+                      {lesson.title}
+                    </div>
+                    <div className="text-xs text-muted-foreground truncate">{lesson.summary}</div>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <Badge
+                      variant="outline"
+                      className={cn("text-[10px] capitalize hidden md:inline-flex", levelColors[lesson.level])}
+                    >
+                      {lesson.level}
+                    </Badge>
+                    <span className="text-xs text-muted-foreground tabular-nums">{lesson.duration}m</span>
+                    <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-aws-orange group-hover:translate-x-0.5 transition-all" />
+                  </div>
+                </button>
+              );
+            })}
+            <button
+              onClick={() => navigate({ name: "module", moduleId: mod.id })}
+              className="w-full flex items-center justify-center gap-2 p-3 mt-2 rounded-lg border border-dashed border-border hover:border-aws-orange/50 hover:bg-aws-orange/5 transition-all text-sm text-muted-foreground hover:text-aws-orange"
+            >
+              Open module overview
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+        </CardContent>
+      )}
     </Card>
   );
 }
@@ -329,31 +370,38 @@ export function LessonView({ moduleId, lessonId }: { moduleId: string; lessonId:
   };
 
   return (
-    <div className="space-y-6">
-      {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-        <button onClick={() => navigate({ name: "module", moduleId })} className="hover:text-foreground">
+    <div className="space-y-6 pb-24">
+      {/* Breadcrumb — premium with better contrast */}
+      <nav className="flex items-center gap-2 text-sm" aria-label="Breadcrumb">
+        <button
+          onClick={() => navigate({ name: "module", moduleId })}
+          className="text-muted-foreground hover:text-aws-orange transition-colors"
+        >
           {mod.short}
         </button>
-        <ChevronRight className="w-3 h-3" />
-        <span className="text-foreground">{lesson.title}</span>
-      </div>
+        <ChevronRight className="w-3 h-3 text-muted-foreground/60" />
+        <span className="text-foreground font-medium">{lesson.title}</span>
+      </nav>
 
-      {/* Lesson Header */}
-      <div>
-        <div className="flex flex-wrap items-center gap-2 mb-3">
-          <Badge className={cn(levelColors[lesson.level])}>{lesson.level}</Badge>
-          <span className="text-xs text-muted-foreground flex items-center gap-1">
+      {/* Lesson Header — premium */}
+      <div className="fade-in-up">
+        <div className="flex flex-wrap items-center gap-3 mb-4">
+          <Badge className={cn("text-xs capitalize", levelColors[lesson.level])}>
+            {lesson.level}
+          </Badge>
+          <span className="text-xs text-muted-foreground flex items-center gap-1.5 px-2 py-1 rounded-md bg-muted">
             <Clock className="w-3 h-3" />
             {lesson.duration} min
           </span>
-          <span className="text-xs text-muted-foreground flex items-center gap-1">
+          <span className="text-xs text-aws-amber flex items-center gap-1.5 px-2 py-1 rounded-md bg-aws-amber/10">
             <Award className="w-3 h-3" />
             {lesson.xp} XP
           </span>
         </div>
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight">{lesson.title}</h1>
-        <p className="text-lg text-muted-foreground mt-2">{lesson.summary}</p>
+        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-tight mb-3">
+          {lesson.title}
+        </h1>
+        <p className="text-lg text-muted-foreground leading-relaxed">{lesson.summary}</p>
       </div>
 
       <Separator />
@@ -366,54 +414,68 @@ export function LessonView({ moduleId, lessonId }: { moduleId: string; lessonId:
       </div>
 
       {/* Complete Button */}
-      <Card className={cn("border-2", isDone ? "border-level-beginner bg-level-beginner/5" : "border-dashed")}>
-        <CardContent className="flex items-center justify-between py-4">
+      {/* Completion bar — premium emphasis at end of content */}
+      <Card className={cn(
+        "border-2 shadow-lg",
+        isDone ? "border-aws-emerald/50 bg-aws-emerald/5" : "border-aws-orange/40 bg-card"
+      )}>
+        <CardContent className="flex items-center justify-between py-5">
           <div className="flex items-center gap-3">
             {isDone ? (
-              <CheckCircle2 className="w-6 h-6 text-level-beginner" />
+              <div className="w-12 h-12 rounded-full bg-aws-emerald/20 flex items-center justify-center">
+                <CheckCircle2 className="w-7 h-7 text-aws-emerald" />
+              </div>
             ) : (
-              <Circle className="w-6 h-6 text-muted-foreground" />
+              <div className="w-12 h-12 rounded-full bg-aws-orange/15 flex items-center justify-center">
+                <Circle className="w-7 h-7 text-aws-orange" />
+              </div>
             )}
             <div>
-              <div className="font-medium">
+              <div className="font-semibold text-base">
                 {isDone ? "Lesson Complete!" : "Mark this lesson as complete"}
               </div>
-              <div className="text-xs text-muted-foreground">
+              <div className="text-sm text-muted-foreground">
                 {isDone ? `+${lesson.xp} XP earned` : `Earn ${lesson.xp} XP and track your progress`}
               </div>
             </div>
           </div>
-          {!isDone && (
-            <Button onClick={onComplete}>
-              <CheckCircle2 className="w-4 h-4 mr-1" />
-              Complete
-            </Button>
-          )}
+          <div className="flex items-center gap-2">
+            {!isDone && (
+              <Button onClick={onComplete} className="glow-orange">
+                <CheckCircle2 className="w-4 h-4 mr-1" />
+                Complete
+              </Button>
+            )}
+            {nextLesson && (
+              <Button
+                variant={isDone ? "default" : "outline"}
+                onClick={() => navigate({ name: "lesson", moduleId, lessonId: nextLesson.id })}
+              >
+                {isDone ? "Next lesson" : "Skip"}
+                <ArrowRight className="w-4 h-4 ml-1" />
+              </Button>
+            )}
+          </div>
         </CardContent>
       </Card>
 
-      {/* Navigation */}
-      <div className="flex items-center justify-between pt-4 border-t border-border">
+      {/* Navigation — below sticky bar */}
+      <div className="flex items-center justify-between pt-2">
         {prevLesson ? (
-          <Button variant="outline" onClick={() => navigate({ name: "lesson", moduleId, lessonId: prevLesson.id })}>
+          <Button variant="ghost" size="sm" onClick={() => navigate({ name: "lesson", moduleId, lessonId: prevLesson.id })}>
             <ArrowLeft className="w-4 h-4 mr-1" />
-            Previous
+            Previous lesson
           </Button>
         ) : (
-          <Button variant="ghost" onClick={() => navigate({ name: "module", moduleId })}>
+          <Button variant="ghost" size="sm" onClick={() => navigate({ name: "module", moduleId })}>
             <ArrowLeft className="w-4 h-4 mr-1" />
             Module overview
           </Button>
         )}
-        {nextLesson ? (
-          <Button onClick={() => navigate({ name: "lesson", moduleId, lessonId: nextLesson.id })}>
-            Next lesson
-            <ArrowRight className="w-4 h-4 ml-1" />
-          </Button>
-        ) : (
-          <Button onClick={() => navigate({ name: "module", moduleId })}>
+        {!nextLesson && (
+          <Button size="sm" onClick={() => navigate({ name: "module", moduleId })}>
+            <CheckCircle2 className="w-4 h-4 mr-1" />
             Finish module
-            <CheckCircle2 className="w-4 h-4 ml-1" />
           </Button>
         )}
       </div>
