@@ -224,7 +224,7 @@ const fundamentalsModule: Module = {
         { type: "list", items: [
           "Region — a geographic area (e.g., us-east-1 in Virginia). Each region is fully independent.",
           "Availability Zone (AZ) — one or more data centers within a region, with independent power, cooling, and networking. Regions have 2–6 AZs.",
-          "Edge Location — a smaller POP (point of presence) for content caching (CloudFront, Route 53). AWS has 400+ edge locations in 90+ cities.",
+          "Edge Location — a smaller POP (point of presence) for content caching (CloudFront, Route 53). AWS has 600+ points of presence in 100+ cities across 50+ countries.",
           "Local Zones — extend AWS to large metro areas not yet full regions (e.g., Los Angeles, Miami).",
           "Wavelength Zones — embed AWS at 5G provider data centers for ultra-low-latency mobile apps.",
         ]},

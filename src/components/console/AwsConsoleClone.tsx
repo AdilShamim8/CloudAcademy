@@ -4129,10 +4129,16 @@ export function AwsConsoleClone() {
   const [iamUsers, setIamUsers] = React.useState<IamUser[]>(INITIAL_IAM_USERS);
   const [vpcs, setVpcs] = React.useState<VpcResource[]>(INITIAL_VPCS);
   const [lambdaFunctions, setLambdaFunctions] = React.useState<LambdaFunction[]>(INITIAL_LAMBDA);
+  const [pendingService, setPendingService] = React.useState<{ name: string; category: string } | null>(null);
 
   const selectService = (id: string) => {
     const isImplemented = ["ec2", "s3", "iam", "vpc", "lambda", "cloudwatch"].includes(id);
-    if (!isImplemented) return; // other services shown in sidebar but not implemented
+    if (!isImplemented) {
+      // Show a friendly "coming soon" message instead of doing nothing
+      const svc = SIDEBAR_SERVICES.find((s) => s.id === id);
+      if (svc) setPendingService({ name: svc.name, category: svc.category });
+      return;
+    }
     setSelectedService(id as ServiceId);
     setSidebarOpen(false);
     setSearch("");
@@ -4169,17 +4175,17 @@ export function AwsConsoleClone() {
             {sidebarOpen ? <X className="size-5" /> : <Menu className="size-5" />}
           </button>
           <div className="flex items-center gap-1.5">
-            <Cloud className="size-5" style={{ color: "var(--aws-orange)" }} />
-            <span className="text-sm font-semibold tracking-tight">AWS Console Clone</span>
+            <Cloud className="size-5 shrink-0" style={{ color: "var(--aws-orange)" }} />
+            <span className="text-sm font-semibold tracking-tight hidden xs:inline sm:inline">AWS Console Clone</span>
           </div>
           <SimBadge compact />
         </div>
 
         <div className="flex items-center gap-1 sm:gap-2">
-          {/* Region selector */}
+          {/* Region selector — hidden on very small screens */}
           <Select value={region} onValueChange={setRegion}>
             <SelectTrigger
-              className="h-8 w-fit border-white/20 bg-white/10 text-xs text-white hover:bg-white/20"
+              className="hidden h-8 w-fit border-white/20 bg-white/10 text-xs text-white hover:bg-white/20 sm:flex"
               size="sm"
             >
               <Globe className="size-3.5" />
@@ -4192,10 +4198,10 @@ export function AwsConsoleClone() {
             </SelectContent>
           </Select>
 
-          <Button variant="ghost" size="icon" className="size-8 text-white hover:bg-white/10">
+          <Button variant="ghost" size="icon" className="hidden size-8 text-white hover:bg-white/10 sm:inline-flex">
             <HelpCircle className="size-4" />
           </Button>
-          <Button variant="ghost" size="icon" className="size-8 text-white hover:bg-white/10">
+          <Button variant="ghost" size="icon" className="hidden size-8 text-white hover:bg-white/10 sm:inline-flex">
             <Bell className="size-4" />
           </Button>
 
@@ -4204,8 +4210,8 @@ export function AwsConsoleClone() {
             <div className="flex size-6 items-center justify-center rounded-full text-[10px] font-semibold" style={{ backgroundColor: "var(--aws-orange)" }}>
               LA
             </div>
-            <span className="hidden text-xs font-medium sm:inline">lab-account</span>
-            <ChevronDown className="size-3" />
+            <span className="hidden text-xs font-medium md:inline">lab-account</span>
+            <ChevronDown className="hidden size-3 md:inline" />
           </div>
         </div>
       </header>
@@ -4213,7 +4219,7 @@ export function AwsConsoleClone() {
       <div className="flex flex-1">
         {/* Sidebar — desktop */}
         <aside
-          className="hidden w-60 shrink-0 border-r lg:block"
+          className="hidden w-60 shrink-0 border-r md:block"
           style={{ backgroundColor: AWS_SIDEBAR }}
         >
           <SidebarContent
@@ -4237,9 +4243,9 @@ export function AwsConsoleClone() {
                 onClick={() => setSidebarOpen(false)}
               />
               <motion.aside
-                initial={{ x: -260 }}
+                initial={{ x: -288 }}
                 animate={{ x: 0 }}
-                exit={{ x: -260 }}
+                exit={{ x: -288 }}
                 transition={{ type: "tween", duration: 0.2 }}
                 className="fixed left-0 top-[50px] z-50 h-[calc(100vh-50px)] w-72 border-r shadow-xl md:hidden"
                 style={{ backgroundColor: AWS_SIDEBAR }}
@@ -4308,6 +4314,42 @@ export function AwsConsoleClone() {
           </footer>
         </main>
       </div>
+
+      {/* Coming soon dialog for not-yet-implemented services */}
+      <Dialog open={!!pendingService} onOpenChange={(open) => !open && setPendingService(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Lock className="w-5 h-5 text-aws-amber" />
+              {pendingService?.name} — Coming Soon
+            </DialogTitle>
+            <DialogDescription>
+              The <strong>{pendingService?.name}</strong> console ({pendingService?.category} category) is part of the
+              AWS Console Clone but hasn't been fully simulated yet. The 6 fully-implemented service consoles are:
+              <br />
+              <span className="mt-2 inline-flex flex-wrap gap-1">
+                <Badge variant="outline" className="text-xs">EC2</Badge>
+                <Badge variant="outline" className="text-xs">S3</Badge>
+                <Badge variant="outline" className="text-xs">IAM</Badge>
+                <Badge variant="outline" className="text-xs">VPC</Badge>
+                <Badge variant="outline" className="text-xs">Lambda</Badge>
+                <Badge variant="outline" className="text-xs">CloudWatch</Badge>
+              </span>
+              <br /><br />
+              These 6 cover the most important AWS workflows end-to-end. The other services
+              are listed in the sidebar for reference and to show what the real AWS Console looks like.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end gap-2 mt-4">
+            <Button variant="outline" onClick={() => setPendingService(null)}>
+              Close
+            </Button>
+            <Button onClick={() => { setPendingService(null); selectService("ec2"); }}>
+              Open EC2 Console
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

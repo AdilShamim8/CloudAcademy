@@ -1,0 +1,19 @@
+{
+  "name": "CloudAcademy — AWS Cloud Learning Platform",
+  "short_name": "CloudAcademy",
+  "description": "Master AWS Cloud from beginner to expert with interactive lessons, labs, projects, and certification prep.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a1d29",
+  "theme_color": "#f97316",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "productivity", "developer"]
+}

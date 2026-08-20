@@ -256,7 +256,7 @@ export const quizzes: Quiz[] = [
           "sc1 (cold HDD)",
         ],
         correctIndex: 2,
-        explanation: "io2 Block Express supports up to 256,000 IOPS and 4 GB/s throughput per volume — designed for mission-critical, latency-sensitive databases. gp3 caps at 16,000 IOPS. HDD types (st1, sc1) are for sequential throughput, not random IOPS.",
+        explanation: "io2 Block Express supports up to 256,000 IOPS and 4,000 MiB/s throughput per volume — designed for mission-critical, latency-sensitive databases. gp3 caps at 16,000 IOPS. HDD types (st1, sc1) are for sequential throughput, not random IOPS.",
         level: "advanced",
       },
       {
@@ -1601,7 +1601,7 @@ def lambda_handler(event, context):
         return {'statusCode': 404, 'body': json.dumps({'error': 'Not found'})}
 
 def list_items():
-        result = table.scan()
+    result = table.scan()
     return {'statusCode': 200, 'body': json.dumps(result['Items'])}
 
 def create_item(event):
@@ -2238,14 +2238,14 @@ export const certificationTracks: CertificationTrack[] = [
     duration: "130 minutes, 65 questions",
     topics: [
       { name: "Design Secure Architectures", weight: 30, moduleId: "security" },
-      { name: "Design Resilient Architectures", weight: 30, moduleId: "ec2" },
-      { name: "Design High-Performing Architectures", weight: 20, moduleId: "ec2" },
+      { name: "Design Resilient Architectures", weight: 26, moduleId: "ec2" },
+      { name: "Design High-Performing Architectures", weight: 24, moduleId: "ec2" },
       { name: "Design Cost-Optimized Architectures", weight: 20, moduleId: "fundamentals" },
     ],
     recommendedModules: ["fundamentals", "aws-essentials", "iam", "ec2", "s3", "rds", "networking", "lambda", "api-gateway", "containers", "security"],
     tips: [
       "Practice architecting real systems — exam is scenario-heavy, not memorization.",
-      "Know the storage classes cold: S3 (6 classes), EBS (4 types), Instance Store, EFS.",
+      "Know the storage classes cold: S3 (7 classes), EBS (4 types), Instance Store, EFS.",
       "Master VPC: subnets, route tables, NAT vs IGW, VPC endpoints, peering vs TGW.",
       "Know when to use which service: EC2 vs Lambda vs Fargate vs ECS, RDS vs DynamoDB.",
       "Multi-AZ vs Multi-Region: know HA patterns and DR strategies.",

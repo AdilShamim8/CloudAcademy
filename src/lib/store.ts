@@ -60,7 +60,10 @@ export const useAppStore = create<ProgressState>()(
   persist(
     (set, get) => ({
       route: { name: "home" },
-      sidebarOpen: true,
+      // Default closed on mobile, open on desktop. The Sidebar component
+      // handles this via CSS (lg:translate-x-0), so this only affects
+      // mobile initial state. Use a function to detect viewport on first render.
+      sidebarOpen: typeof window !== "undefined" && window.innerWidth >= 1024,
       navigate: (route) => {
         set({ route });
         if (typeof window !== "undefined") {

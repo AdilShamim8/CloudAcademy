@@ -62,9 +62,9 @@ aws s3 rm s3://my-company-documents-prod/2026/q3/report.pdf`, caption: "Basic S3
       level: "intermediate",
       duration: 25,
       xp: 15,
-      summary: "Six storage classes from frequent access to deep archive. Match the class to the access pattern and save 80%+.",
+      summary: "Seven storage classes from frequent access to deep archive. Match the class to the access pattern and save 80%+.",
       content: [
-        { type: "paragraph", text: "S3 offers six storage classes, each optimized for different access patterns. Choosing the right class can cut your S3 bill by 80% or more — but choosing wrong (e.g., Glacier for hot data) means slow access and retrieval fees. Lifecycle policies automate transitions between classes." },
+        { type: "paragraph", text: "S3 offers seven storage classes, each optimized for different access patterns. Choosing the right class can cut your S3 bill by 80% or more — but choosing wrong (e.g., Glacier for hot data) means slow access and retrieval fees. Lifecycle policies automate transitions between classes." },
         { type: "comparison", columns: ["Class", "Use case", "Retrieval time", "Cost (vs Standard)"], rows: [
           { label: "Standard", values: ["Frequently accessed data", "Milliseconds", "1x"] },
           { label: "Intelligent-Tiering", values: ["Unknown/unknown access patterns", "Milliseconds (frequent tier)", "Small monitoring fee"] },
@@ -90,7 +90,7 @@ aws s3 rm s3://my-company-documents-prod/2026/q3/report.pdf`, caption: "Basic S3
   ]
 }`, caption: "Lifecycle policy: logs/ → Standard after 30d → IA → Glacier after 90d → Deep Archive after 1y → delete after 7y." },
         { type: "keyTakeaways", items: [
-          "Six storage classes, optimized for different access patterns.",
+          "Seven storage classes, optimized for different access patterns.",
           "Match access pattern to class — wrong choice wastes money.",
           "Lifecycle policies automate class transitions and expiration.",
           "Glacier Deep Archive is ~95% cheaper than Standard — use for compliance archives.",
@@ -371,7 +371,7 @@ aws rds copy-db-snapshot \\
       xp: 25,
       summary: "Beyond vertical scaling: how to actually scale relational databases on AWS for high read/write workloads.",
       content: [
-        { type: "paragraph", text: "RDS instances scale vertically up to 24 TB RAM and 128 vCPUs, but that has hard limits. For real scaling, you need to architect differently: read replicas for read-heavy workloads, Aurora's distributed storage for write scaling, and Aurora Serverless v2 for variable workloads. Connection pooling (RDS Proxy) helps when you have many app instances hitting the same DB." },
+        { type: "paragraph", text: "RDS instances scale vertically up to ~1 TiB RAM (db.x2iedn.32xlarge) and 128 vCPUs, but that has hard limits. For real scaling, you need to architect differently: read replicas for read-heavy workloads, Aurora's distributed storage for write scaling, and Aurora Serverless v2 for variable workloads. Connection pooling (RDS Proxy) helps when you have many app instances hitting the same DB." },
         { type: "comparison", columns: ["Pattern", "Scales what", "Limit", "When to use"], rows: [
           { label: "Vertical scaling", values: ["Single instance CPU/RAM", "Hardware max", "Most workloads up to medium scale"] },
           { label: "Read replicas", values: ["Read throughput", "5 (RDS) / 15 (Aurora)", "Read-heavy apps (8:1 read:write)"] },

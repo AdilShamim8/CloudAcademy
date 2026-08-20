@@ -42,7 +42,7 @@ export const networkingModule: Module = {
 For VPCs, common choices:
 - VPC CIDR: /16 (e.g., 10.0.0.0/16) — gives 65k IPs, plenty
 - Subnet CIDR: /24 (e.g., 10.0.1.0/24) — 256 IPs per AZ, easy to reason about
-- AWS reserves 5 IPs per subnet (network, broadcast, DNS, plus 2 future use)
+- AWS reserves 5 IPs per subnet (.0 network, .1 VPC router, .2 DNS, .3 reserved future, .255 broadcast)
 
 Calculate usable hosts in a /N subnet: 2^(32-N) - 5 (for AWS)`, caption: "CIDR cheat sheet — the math behind AWS networking." },
         { type: "callout", variant: "tip", title: "Plan your CIDR ranges up front", text: "Choose your VPC CIDR ranges carefully — you can't easily change them later. Avoid overlapping ranges if you plan to peer VPCs or set up VPNs to on-prem. A common pattern: 10.0.0.0/16 for prod, 10.1.0.0/16 for staging, 10.2.0.0/16 for dev. Coordinate with your networking team if peering to corporate." },
@@ -430,21 +430,24 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Install dependencies first (better caching)
+# Install ALL dependencies (including dev) first — needed for build
 COPY package*.json ./
-RUN npm ci --only=production
+RUN npm ci
 
 # Copy application code
 COPY . .
 
-# Build
+# Build the application (needs devDependencies for build tools)
 RUN npm run build
+
+# Remove dev dependencies to slim down the image
+RUN npm prune --production
 
 # Run as non-root user for security
 USER node
 EXPOSE 3000
 
-CMD ["node", "dist/main.js"]`, caption: "A production-quality Dockerfile: small base image, deps cached, non-root user." },
+CMD ["node", "dist/main.js"]`, caption: "A production-quality Dockerfile: small base image, deps cached, build deps pruned, non-root user." },
         { type: "keyTakeaways", items: [
           "Containers package app + dependencies, run anywhere.",
           "Containers share kernel with host; much lighter than VMs.",

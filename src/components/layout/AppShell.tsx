@@ -265,10 +265,11 @@ export function TopBar() {
       <div className="flex-1 max-w-md">
         <button
           onClick={() => navigate({ name: "home" })}
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2"
+          className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 w-full"
         >
-          <Search className="w-4 h-4" />
-          <span>Search modules, lessons, projects...</span>
+          <Search className="w-4 h-4 shrink-0" />
+          <span className="truncate hidden sm:inline">Search modules, lessons, projects...</span>
+          <span className="truncate sm:hidden">Search...</span>
         </button>
       </div>
 
@@ -285,9 +286,10 @@ export function TopBar() {
           variant="outline"
           size="sm"
           onClick={() => navigate({ name: "dashboard" })}
+          aria-label="My Progress"
         >
-          <LayoutDashboard className="w-4 h-4 mr-1.5" />
-          My Progress
+          <LayoutDashboard className="w-4 h-4 sm:mr-1.5" />
+          <span className="hidden sm:inline">My Progress</span>
         </Button>
       </div>
     </header>

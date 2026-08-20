@@ -201,25 +201,26 @@ export function ProjectsView() {
                     {project.level}
                   </Badge>
                   <Badge variant="outline" className="text-xs">
-                    <Clock className="w-3 h-3 mr-1" />
+                    <Clock className="w-3 h-3 mr-1 shrink-0" />
                     {project.estimatedHours}h
                   </Badge>
-                  <Badge variant="outline" className="text-xs">
-                    <DollarSign className="w-3 h-3 mr-1" />
-                    {project.cost}
+                  <Badge variant="outline" className="text-xs max-w-full">
+                    <DollarSign className="w-3 h-3 mr-1 shrink-0" />
+                    <span className="truncate">{project.cost}</span>
                   </Badge>
                   <Badge variant="outline" className="text-xs">
-                    <Layers className="w-3 h-3 mr-1" />
+                    <Layers className="w-3 h-3 mr-1 shrink-0" />
                     {project.steps.length} steps
                   </Badge>
                 </div>
-                <div className="mt-auto flex items-center justify-between">
-                  <span className="text-xs text-muted-foreground">
+                <div className="mt-auto flex items-center justify-between gap-2">
+                  <span className="text-xs text-muted-foreground hidden sm:inline">
                     {project.objectives.length} objectives ·{" "}
-                    {project.troubleshooting.length} troubleshooting tips
+                    {project.troubleshooting.length} tips
                   </span>
                   <Button
                     size="sm"
+                    className="ml-auto"
                     onClick={(e) => {
                       e.stopPropagation();
                       navigate({ name: "project", projectId: project.id });

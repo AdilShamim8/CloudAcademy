@@ -70,8 +70,8 @@ export function HomePage() {
               Beginner to Expert AWS Journey
             </span>
           </div>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-5 max-w-4xl leading-[1.1]">
-            Master <span className="gradient-text-orange">AWS Cloud</span> from absolute zero to expert architect
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-5 max-w-4xl leading-[1.1] balance-text">
+            Master <span className="gradient-text-orange">AWS Cloud</span> from absolute zero to expert&nbsp;architect
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mb-8 leading-relaxed">
             A complete, interactive learning platform covering 14 AWS modules, 10 hands-on projects, real-world troubleshooting scenarios, simulators, and certification prep — designed for AI/ML developers and DevOps engineers.
