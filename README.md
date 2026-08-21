@@ -254,6 +254,4 @@ When working with a real AWS account, always:
 
 **[⬆ Back to Top](#-cloudacademy)**
 
-Made with ❤️ for the AWS learning community
-
 </div>
